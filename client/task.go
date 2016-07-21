@@ -37,9 +37,6 @@ func (c *Client) NewCreateTaskRequest(ctx context.Context, path string, content 
 	if err != nil {
 		return nil, err
 	}
-	if c.PasswordSigner != nil {
-		c.PasswordSigner.Sign(req)
-	}
 	return req, nil
 }
 
@@ -68,40 +65,6 @@ func (c *Client) NewDeleteTaskRequest(ctx context.Context, path string) (*http.R
 	if err != nil {
 		return nil, err
 	}
-	if c.PasswordSigner != nil {
-		c.PasswordSigner.Sign(req)
-	}
-	return req, nil
-}
-
-// ListTaskPath computes a request path to the list action of Task.
-func ListTaskPath() string {
-	return fmt.Sprintf("/tasks/list")
-}
-
-// List all tasks.
-func (c *Client) ListTask(ctx context.Context, path string) (*http.Response, error) {
-	req, err := c.NewListTaskRequest(ctx, path)
-	if err != nil {
-		return nil, err
-	}
-	return c.Client.Do(ctx, req)
-}
-
-// NewListTaskRequest create the request corresponding to the list action endpoint of the Task resource.
-func (c *Client) NewListTaskRequest(ctx context.Context, path string) (*http.Request, error) {
-	scheme := c.Scheme
-	if scheme == "" {
-		scheme = "http"
-	}
-	u := url.URL{Host: c.Host, Scheme: scheme, Path: path}
-	req, err := http.NewRequest("GET", u.String(), nil)
-	if err != nil {
-		return nil, err
-	}
-	if c.PasswordSigner != nil {
-		c.PasswordSigner.Sign(req)
-	}
 	return req, nil
 }
 
@@ -129,9 +92,6 @@ func (c *Client) NewShowTaskRequest(ctx context.Context, path string) (*http.Req
 	req, err := http.NewRequest("GET", u.String(), nil)
 	if err != nil {
 		return nil, err
-	}
-	if c.PasswordSigner != nil {
-		c.PasswordSigner.Sign(req)
 	}
 	return req, nil
 }
@@ -165,9 +125,6 @@ func (c *Client) NewUpdateTaskRequest(ctx context.Context, path string, content 
 	req, err := http.NewRequest("PUT", u.String(), nil)
 	if err != nil {
 		return nil, err
-	}
-	if c.PasswordSigner != nil {
-		c.PasswordSigner.Sign(req)
 	}
 	return req, nil
 }

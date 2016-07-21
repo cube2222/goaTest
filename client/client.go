@@ -8,9 +8,8 @@ import (
 // Client is the TaskList service client.
 type Client struct {
 	*goaclient.Client
-	PasswordSigner goaclient.Signer
-	Encoder        *goa.HTTPEncoder
-	Decoder        *goa.HTTPDecoder
+	Encoder *goa.HTTPEncoder
+	Decoder *goa.HTTPDecoder
 }
 
 // New instantiates the client.
@@ -34,9 +33,4 @@ func New(c goaclient.Doer) *Client {
 	client.Decoder.Register(goa.NewJSONDecoder, "*/*")
 
 	return client
-}
-
-// SetPasswordSigner sets the request signer for the password security scheme.
-func (c *Client) SetPasswordSigner(signer goaclient.Signer) {
-	c.PasswordSigner = signer
 }

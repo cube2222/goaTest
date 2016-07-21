@@ -31,3 +31,16 @@ func (c *Client) DecodeTasklistTask(resp *http.Response) (*TasklistTask, error) 
 	err := c.Decoder.Decode(&decoded, resp.Body, resp.Header.Get("Content-Type"))
 	return &decoded, err
 }
+
+// A group of tasks.
+type TasklistTasklist struct {
+	// All the tasks.
+	List []*TasklistTask `json:"list,omitempty" xml:"list,omitempty" form:"list,omitempty"`
+}
+
+// DecodeTasklistTasklist decodes the TasklistTasklist instance encoded in resp body.
+func (c *Client) DecodeTasklistTasklist(resp *http.Response) (*TasklistTasklist, error) {
+	var decoded TasklistTasklist
+	err := c.Decoder.Decode(&decoded, resp.Body, resp.Header.Get("Content-Type"))
+	return &decoded, err
+}

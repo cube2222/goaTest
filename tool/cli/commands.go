@@ -27,11 +27,6 @@ type (
 		PrettyPrint bool
 	}
 
-	// ListTaskCommand is the command line data structure for the list action of Task
-	ListTaskCommand struct {
-		PrettyPrint bool
-	}
-
 	// ShowTaskCommand is the command line data structure for the show action of Task
 	ShowTaskCommand struct {
 		// Task ID
@@ -45,6 +40,11 @@ type (
 		TaskID string
 		// Updated task content.
 		Content     string
+		PrettyPrint bool
+	}
+
+	// ShowTasklistCommand is the command line data structure for the show action of Tasklist
+	ShowTasklistCommand struct {
 		PrettyPrint bool
 	}
 )
@@ -81,26 +81,21 @@ func RegisterCommands(app *cobra.Command, c *client.Client) {
 	command.AddCommand(sub)
 	app.AddCommand(command)
 	command = &cobra.Command{
-		Use:   "list",
-		Short: `List all tasks.`,
+		Use:   "show",
+		Short: `show action`,
 	}
-	tmp3 := new(ListTaskCommand)
+	tmp3 := new(ShowTaskCommand)
 	sub = &cobra.Command{
-		Use:   `Task ["/tasks/list"]`,
+		Use:   `Task ["/tasks/TASKID"]`,
 		Short: ``,
 		RunE:  func(cmd *cobra.Command, args []string) error { return tmp3.Run(c, args) },
 	}
 	tmp3.RegisterFlags(sub, c)
 	sub.PersistentFlags().BoolVar(&tmp3.PrettyPrint, "pp", false, "Pretty print response body")
 	command.AddCommand(sub)
-	app.AddCommand(command)
-	command = &cobra.Command{
-		Use:   "show",
-		Short: `Get task by ID.`,
-	}
-	tmp4 := new(ShowTaskCommand)
+	tmp4 := new(ShowTasklistCommand)
 	sub = &cobra.Command{
-		Use:   `Task ["/tasks/TASKID"]`,
+		Use:   `Tasklist ["/list/list"]`,
 		Short: ``,
 		RunE:  func(cmd *cobra.Command, args []string) error { return tmp4.Run(c, args) },
 	}
@@ -213,30 +208,6 @@ func (cmd *DeleteTaskCommand) RegisterFlags(cc *cobra.Command, c *client.Client)
 	cc.Flags().StringVar(&cmd.TaskID, "taskID", taskID, `Task ID`)
 }
 
-// Run makes the HTTP request corresponding to the ListTaskCommand command.
-func (cmd *ListTaskCommand) Run(c *client.Client, args []string) error {
-	var path string
-	if len(args) > 0 {
-		path = args[0]
-	} else {
-		path = "/tasks/list"
-	}
-	logger := goa.NewLogger(log.New(os.Stderr, "", log.LstdFlags))
-	ctx := goa.WithLogger(context.Background(), logger)
-	resp, err := c.ListTask(ctx, path)
-	if err != nil {
-		goa.LogError(ctx, "failed", "err", err)
-		return err
-	}
-
-	goaclient.HandleResponse(c.Client, resp, cmd.PrettyPrint)
-	return nil
-}
-
-// RegisterFlags registers the command flags with the command line.
-func (cmd *ListTaskCommand) RegisterFlags(cc *cobra.Command, c *client.Client) {
-}
-
 // Run makes the HTTP request corresponding to the ShowTaskCommand command.
 func (cmd *ShowTaskCommand) Run(c *client.Client, args []string) error {
 	var path string
@@ -289,4 +260,28 @@ func (cmd *UpdateTaskCommand) RegisterFlags(cc *cobra.Command, c *client.Client)
 	cc.Flags().StringVar(&cmd.TaskID, "taskID", taskID, `Task ID`)
 	var content string
 	cc.Flags().StringVar(&cmd.Content, "content", content, `Updated task content.`)
+}
+
+// Run makes the HTTP request corresponding to the ShowTasklistCommand command.
+func (cmd *ShowTasklistCommand) Run(c *client.Client, args []string) error {
+	var path string
+	if len(args) > 0 {
+		path = args[0]
+	} else {
+		path = "/list/list"
+	}
+	logger := goa.NewLogger(log.New(os.Stderr, "", log.LstdFlags))
+	ctx := goa.WithLogger(context.Background(), logger)
+	resp, err := c.ShowTasklist(ctx, path)
+	if err != nil {
+		goa.LogError(ctx, "failed", "err", err)
+		return err
+	}
+
+	goaclient.HandleResponse(c.Client, resp, cmd.PrettyPrint)
+	return nil
+}
+
+// RegisterFlags registers the command flags with the command line.
+func (cmd *ShowTasklistCommand) RegisterFlags(cc *cobra.Command, c *client.Client) {
 }
