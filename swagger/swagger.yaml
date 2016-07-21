@@ -1,0 +1,194 @@
+consumes:
+- application/json
+- application/xml
+- application/gob
+- application/x-gob
+definitions:
+  TasklistTask:
+    description: A single task. (default view)
+    example:
+      content: Repellendus saepe molestiae quia deserunt.
+      id:
+      - 209
+      - 6
+      - 90
+      - 48
+      - 195
+      - 6
+      - 70
+      - 192
+      - 178
+      - 99
+      - 126
+      - 164
+      - 89
+      - 54
+      - 114
+      - 191
+    properties:
+      content:
+        description: Task content.
+        example: Dignissimos asperiores aperiam et nisi velit at.
+        type: string
+      id:
+        description: Unique task ID.
+        example:
+        - 123
+        - 56
+        - 182
+        - 231
+        - 0
+        - 14
+        - 71
+        - 151
+        - 136
+        - 163
+        - 192
+        - 215
+        - 50
+        - 38
+        - 177
+        - 157
+        format: uuid
+        type: string
+    title: 'Mediatype identifier: application/tasklist.task+json'
+    type: object
+host: localhost:8080
+info:
+  description: Simple tasklist using goa.
+  title: TaskList
+  version: ""
+paths:
+  /tasks:
+    post:
+      description: Create task with content.
+      operationId: Task#create
+      parameters:
+      - description: New task content.
+        in: query
+        name: content
+        required: false
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/TasklistTask'
+        "418":
+          description: I'm a teapot
+      schemes:
+      - http
+      security:
+      - password: []
+      summary: create Task
+      tags:
+      - Task
+  /tasks/{taskID}:
+    delete:
+      description: Delete task by ID.
+      operationId: Task#delete
+      parameters:
+      - description: Task ID
+        in: path
+        name: taskID
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/TasklistTask'
+        "418":
+          description: I'm a teapot
+      schemes:
+      - http
+      security:
+      - password: []
+      summary: delete Task
+      tags:
+      - Task
+    get:
+      description: Get task by ID.
+      operationId: Task#show
+      parameters:
+      - description: Task ID
+        in: path
+        name: taskID
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/TasklistTask'
+        "418":
+          description: I'm a teapot
+      schemes:
+      - http
+      security:
+      - password: []
+      summary: show Task
+      tags:
+      - Task
+    put:
+      description: Update task content.
+      operationId: Task#update
+      parameters:
+      - description: Updated task content.
+        in: query
+        name: content
+        required: false
+        type: string
+      - description: Task ID
+        in: path
+        name: taskID
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/TasklistTask'
+        "418":
+          description: I'm a teapot
+      schemes:
+      - http
+      security:
+      - password: []
+      summary: update Task
+      tags:
+      - Task
+  /tasks/list:
+    get:
+      description: List all tasks.
+      operationId: Task#list
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/TasklistTask'
+      schemes:
+      - http
+      security:
+      - password: []
+      summary: list Task
+      tags:
+      - Task
+produces:
+- application/json
+- application/xml
+- application/gob
+- application/x-gob
+responses:
+  OK:
+    description: OK
+    schema:
+      $ref: '#/definitions/TasklistTask'
+  Teapot:
+    description: I'm a teapot
+schemes:
+- http
+securityDefinitions:
+  password:
+    type: basic
+swagger: "2.0"
